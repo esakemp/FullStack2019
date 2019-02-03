@@ -35,10 +35,18 @@ const App = () => {
 
 
   const deletePerson = (event) => {
+
     event.preventDefault()
     console.log('deleteä painettu henkilölle', event.target.id)
+
     const removable = event.target.id
-    personService.remove(removable)
+    const name = event.target.value
+    console.log(name)
+
+    if (window.confirm(`Are you sure you want to delete ${name}`)) {
+      personService.remove(removable)
+    }
+
   }
 
   const addPerson = (event) => {
@@ -72,7 +80,7 @@ const App = () => {
   const filteredPersons = persons.filter(person => person.name.toLowerCase().match(filter.toLowerCase()))
 
   const rows = () =>
-    filteredPersons.map(person => <Person key={person.name} person={person} deletePerson={deletePerson}/>)
+    filteredPersons.map(person => <Person key={person.name} person={person} deletePerson={deletePerson} />)
 
   return (
     <div>
