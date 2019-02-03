@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Filter from './components/Filter'
+import Person from './components/Person'
+import NewPerson from './components/NewPerson'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,17 +15,17 @@ const App = () => {
   const [filter, setNewFilter] = useState('')
 
   const handleNameChange = (event) => {
-    console.log('nimeä kirjoitetaan',event.target.value)
+    console.log('nimeä kirjoitetaan', event.target.value)
     setNewName(event.target.value)
 
   }
   const handleNumberChange = (event) => {
-    console.log('numeroa kirjoitetaan',event.target.value)
+    console.log('numeroa kirjoitetaan', event.target.value)
     setNewNumber(event.target.value)
 
   }
   const handleFilterChange = (event) => {
-    console.log('filtteriä kirjoitetaan',event.target.value)
+    console.log('filtteriä kirjoitetaan', event.target.value)
     setNewFilter(event.target.value)
   }
 
@@ -50,32 +53,21 @@ const App = () => {
 
 
   }
-  
-  const filteredPersons = persons.filter(person => person.name.match(filter))
+
+  const filteredPersons = persons.filter(person => person.name.toLowerCase().match(filter.toLowerCase()))
   console.log(filteredPersons.length)
 
   const rows = () =>
-    filteredPersons.map(person => <li key={person.name}>{person.name} {person.number}</li>)
-
+    filteredPersons.map(person => <Person person = {person}/>)
 
   return (
     <div>
       <h1>Puhelinluettelo</h1>
-      <form>
-        rajaa näytettäviä <input value={filter} onChange={handleFilterChange}/>
-      </form>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>Lisää uusi</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          nimi: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          numero: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">lisää</button>
-        </div>
-      </form>
+      <NewPerson addPerson={addPerson} newName={newName}
+        handleNameChange={handleNameChange} newNumber={newNumber}
+        handleNumberChange={handleNumberChange} />
       <h2>Numerot</h2>
       <p>{rows()}</p>
     </div>
