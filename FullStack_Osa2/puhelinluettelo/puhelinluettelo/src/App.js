@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Person from './components/Person'
 import NewPerson from './components/NewPerson'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Martti Tienari', number: '040-123456' },
-    { name: 'Arto Järvinen', number: '040-123456' },
-    { name: 'Lea Kutvonen', number: '040-123456' }
-  ])
+
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+
+  useEffect(() => {
+    console.log("effect lol")
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+        console.log(response.data)
+      })
+  }, [])
+  
 
   const handleNameChange = (event) => {
     console.log('nimeä kirjoitetaan', event.target.value)
@@ -43,6 +52,7 @@ const App = () => {
         return el.name.toLowerCase() === Name.toLowerCase()
       })
     }
+
     if (personExists(newName)) {
       alert(`${newName} on jo luettelossa`)
     } else {
@@ -58,7 +68,7 @@ const App = () => {
   console.log(filteredPersons.length)
 
   const rows = () =>
-    filteredPersons.map(person => <Person person = {person}/>)
+    filteredPersons.map(person => <Person key={person.name} person={person} />)
 
   return (
     <div>
@@ -69,7 +79,7 @@ const App = () => {
         handleNameChange={handleNameChange} newNumber={newNumber}
         handleNumberChange={handleNumberChange} />
       <h2>Numerot</h2>
-      <p>{rows()}</p>
+      <div>{rows()}</div>
     </div>
   )
 
