@@ -8,6 +8,7 @@
     "watch": "nodemon index.js",
     "test": "test"
   },
+  "proxy": "http://localhost:3001",
   "author": "Esa",
   "license": "ISC",
   "dependencies": {

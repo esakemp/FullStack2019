@@ -37,6 +37,7 @@ app.use(bodyParser.json())
 morgan.token('object', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status - :response-time ms :object'))
 app.use(cors())
+app.use(express.static('build'))
 
 app.get('/', (req, res) => {
     res.send('<h1>Nothing to see here</h1>')
