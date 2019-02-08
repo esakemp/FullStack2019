@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 //initialize phonebook
 
@@ -35,6 +36,7 @@ let persons = [
 app.use(bodyParser.json())
 morgan.token('object', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status - :response-time ms :object'))
+app.use(cors())
 
 app.get('/', (req, res) => {
     res.send('<h1>Nothing to see here</h1>')
@@ -64,7 +66,7 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 //add single person
-app.post('/api/person', (req, res) => {
+app.post('/api/persons', (req, res) => {
 
     //randomize id (1k bit overkill maybe)
     const id = Math.floor(Math.random() * 1000)
@@ -72,7 +74,7 @@ app.post('/api/person', (req, res) => {
     const body = req.body
 
     //checks for name and number
-    if (body.name === undefined || body.number === '') {
+    if (body.name === undefined || body.name === '') {
         return res.status(400).json({ error: 'name missing' })
     }
 
@@ -105,7 +107,7 @@ app.post('/api/person', (req, res) => {
 
 })
 
-const PORT = 3001
+const PORT = process.env || 3001
 app.listen(PORT, () => {
     console.log(`Server runnning on port ${PORT}`)
 })
