@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 //initialize phonebook
 
@@ -108,7 +109,7 @@ app.post('/api/persons', (req, res) => {
 
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server runnning on port ${PORT}`)
 })
