@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -7,7 +8,7 @@ const Person = require('./models/person')
 
 //initialize phonebook
 
-let persons = [
+let persons2 = [
 
 
     {
@@ -46,23 +47,25 @@ app.get('/', (req, res) => {
 
 //request for all persons
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(persons => {
+        res.json(persons.map(person => person.toJSON()))
+    })
 })
 
 //info for the app
 app.get('/info', (req, res) => {
-    res.send(`<div>Puhelinluettelossa ${persons.length} henkilön tiedot</div><div>${Date()}</div>`)
+    res.send(`<div>Puhelinluettelossa ${persons2.length} henkilön tiedot</div><div>${Date()}</div>`)
 })
 
 //request single person by id
 app.get('/api/persons/:id', (req, res) => {
-    res.json(persons.find(person => person.id === Number(req.params.id)))
+    res.json(persons2.find(person => person.id === Number(req.params.id)))
 })
 
 //delete single person
 app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
+    persons2 = persons2.filter(person => person.id !== id)
 
     res.status(204).end();
 })
@@ -86,26 +89,23 @@ app.post('/api/persons', (req, res) => {
 
     //function to check if name is in the phonebook
     function personExists(Name) {
-        return persons.some(function (el) {
+        return persons2.some(function (el) {
             return el.name.toLowerCase() === Name.toLowerCase()
         })
     }
 
-    if (personExists(body.name)) {
 
-        return res.status(400).json({ error: 'name already exists' })
 
-    } else {
+    const person = new Person({
+        name: body.name,
+        number: body.number,
+        id: id
+    })
 
-        const person = {
-            name: body.name,
-            number: body.number,
-            id: id
-        }
+    person.save().then(savedPerson => {
+        res.json(savedPerson.toJSON())
+    })
 
-        persons = persons.concat(person)
-        res.json(person)
-    }
 
 })
 
