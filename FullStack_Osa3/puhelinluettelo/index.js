@@ -64,10 +64,12 @@ app.get('/api/persons/:id', (req, res) => {
 
 //delete single person
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons2 = persons2.filter(person => person.id !== id)
 
-    res.status(204).end();
+    Person.findByIdAndRemove(req.params.id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 //add single person
