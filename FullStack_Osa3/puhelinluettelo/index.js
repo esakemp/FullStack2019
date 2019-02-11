@@ -30,8 +30,10 @@ app.get('/api/persons', (req, res) => {
 })
 
 //info for the app
-app.get('/info', (req, res) => {
-    res.send(`<div>Puhelinluettelossa ${Person.length + 1} henkilön tiedot</div><div>${Date()}</div>`)
+app.get('/info', (req, res, next) => {
+    Person.find({}).then(persons => {
+        res.send(`<div>Puhelinluettelossa ${persons.length} henkilön tiedot</div><div>${Date()}</div>`)
+    }).catch(error => next(error))
 })
 
 //request single person by id
