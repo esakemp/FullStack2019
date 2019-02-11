@@ -31,7 +31,7 @@ app.get('/api/persons', (req, res) => {
 
 //info for the app
 app.get('/info', (req, res) => {
-    res.send(`<div>Puhelinluettelossa ${Person.length} henkilön tiedot</div><div>${Date()}</div>`)
+    res.send(`<div>Puhelinluettelossa ${Person.length + 1} henkilön tiedot</div><div>${Date()}</div>`)
 })
 
 //request single person by id
