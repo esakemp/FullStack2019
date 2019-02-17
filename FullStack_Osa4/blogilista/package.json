@@ -2,22 +2,18 @@
   "name": "blogilista",
   "version": "0.1.0",
   "private": true,
+  "main": "index.js",
   "dependencies": {
-    "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.12",
-    "nodemon": "^1.18.10",
-    "react": "^16.8.2",
-    "react-dom": "^16.8.2",
-    "react-scripts": "2.1.5"
+    "mongoose-unique-validator": "^2.0.2",
+    "validators": "^0.3.1"
   },
   "scripts": {
-    "start": "node index.js",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "dev": "nodemon .",
-    "test": "jest --verbose"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
   "jest": {
     "testEnvirontment": "node"
@@ -32,6 +28,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "jest": "^24.1.0"
+    "cross-env": "^5.2.0",
+    "dot-env": "0.0.1",
+    "jest": "^24.1.0",
+    "nodemon": "^1.18.10",
+    "supertest": "^3.4.2"
   }
 }

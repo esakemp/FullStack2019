@@ -4,15 +4,16 @@ const bodyParser = require('body-parser')
 const app = express()
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
+const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 console.log('connecting to ', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(()=> {
-    console.log('connected to mongodb')
+    logger.info('connected to mongodb')
   }).catch((error) => {
-    console.log('error connecting to mongodb', error.message)
+    logger.error('error connecting to mongodb', error.message)
   })
 
 app.use(express.static('build'))
@@ -22,5 +23,5 @@ app.use(middleware.requestLogger)
 app.use('/api/blogs', blogsRouter)
 
 app.use(middleware.unknownEndpoint)
-
+app.use(middleware.errorHandler)
 module.exports = app
