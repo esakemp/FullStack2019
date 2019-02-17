@@ -5,6 +5,7 @@ const helper = require('./test_helper')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -20,7 +21,8 @@ const initialBlogs = [
         title: "Go To Statement Considered Harmful",
         author: "Edsger W. Dijkstra",
         url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-        likes: 5,
+        likes: 5
+        ,
         __v: 0
     },
     {
@@ -61,6 +63,9 @@ beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(initialBlogs)
 
+    await User.deleteMany({})
+    const user = new User({ username: 'root', name: 'superuser', password: 'sekret' })
+    await user.save()
 })
 
 
@@ -155,14 +160,14 @@ test('if url or title not given return status 400', async () => {
 
 test('delete request actually deletes document', async () => {
     await api.delete('/api/blogs/5a422a851b54a676234d17f7').expect(204)
-    
+
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd.length).toBe(initialBlogs.length - 1)
 })
 
 test('update request actually updates document', async () => {
-    
+
     const updatedBlog = new Blog({
         title: "Go To Statement Considered Harmful",
         author: "Edsger W. Dijkstra",
@@ -175,4 +180,49 @@ test('update request actually updates document', async () => {
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd[1].likes).toBe(10)
+})
+
+test('creation works for user', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = ({
+        username: 'mluukkai',
+        name: 'Matti Luukkainen',
+        password: 'salainen'
+    })
+
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd.length).toBe(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+})
+
+test('test username and password length validation', async () => {
+    const usersAtStart = await helper.usersInDb()
+    
+    const newUser = ({
+
+        username: "MikkoM",
+        user: "Mikko Mallikas",
+        password: "sa"
+    })
+    await api.post('/api/users').send(newUser).expect(400)
+
+    const newUser2 = ({
+
+        username: "Mi",
+        user: "Mikko Mallikas",
+        password: "salaisuus"
+    })
+    await api.post('/api/users').send(newUser2).expect(400)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd.length).toBe(usersAtStart.length)
 })
