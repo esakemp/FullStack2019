@@ -60,26 +60,30 @@ test('dummy returns one', () => {
     expect(results).toBe(1)
 })
 
-test('totalLikes returns correct amount of likes', () => {
+describe('like tests', () => {
+   
+    test('totalLikes returns correct amount of likes', () => {
+    
+        const results = listHelper.totalLikes(blogs)
+        expect(results).toBe(36)
+    })
+    
+    test('favoriteBlog returns blog with most likes', () => {
+    
+        const results = listHelper.favoriteBlog(blogs)
+        expect(results).toBe(blogs[2])
+    })
+    
+    test('mostBlogs returns correct blogger', () => {
+    
+        const results = listHelper.mostBlogs(blogs)
+        expect(results).toEqual({ author: "Robert C. Martin", blogs: 3 })
+    
+    })
+    
+    test('mostLikes', () => {
+        const results = listHelper.mostLikes(blogs)
+        expect(results).toEqual({ author: "Edsger W. Dijkstra", likes: 17 })
+    })
 
-    const results = listHelper.totalLikes(blogs)
-    expect(results).toBe(36)
-})
-
-test('favoriteBlog returns blog with most likes', () => {
-
-    const results = listHelper.favoriteBlog(blogs)
-    expect(results).toBe(blogs[2])
-})
-
-test('mostBlogs returns correct blogger', () => {
-
-    const results = listHelper.mostBlogs(blogs)
-    expect(results).toEqual({ author: "Robert C. Martin", blogs: 3 })
-
-})
-
-test('mostLikes', () => {
-    const results = listHelper.mostLikes(blogs)
-    expect(results).toEqual({ author: "Edsger W. Dijkstra", likes: 17 })
 })
