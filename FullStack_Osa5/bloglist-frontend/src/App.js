@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import CreateForm from './components/CreateForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -58,6 +60,7 @@ const App = () => {
 
   const handleSubmit = event => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const newBlogObject = {
       title: title,
       author: author,
@@ -102,51 +105,28 @@ const App = () => {
     </form>
   )
 
+  const blogFormRef = React.createRef()
+
   const blogForm = () => (
     <div>
-      <h2>create new blog</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <Togglable buttonLabel="new blog">
+        <CreateForm
+          author={author}
+          title={title}
+          url={url}
+          handleSubmit={handleSubmit}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          handleUrlChange={({ target }) => setUrl(target.value)}
+        />
+      </Togglable>
     </div>
   )
 
   const blogList = () => (
     <div>
-      <h2>blogs</h2>
-      <p>{user.name} has logged in</p>
-      <button onClick={handleLogout}>logout</button>
-
-      {blogForm()}
-
       <div>
+        <h2>list of current blogs</h2>
         {blogs.map(blog => (
           <Blog key={blog.id} blog={blog} />
         ))}
@@ -157,8 +137,17 @@ const App = () => {
   return (
     <div>
       <Notification message={message} messageType={messageType} />
-      {user === null && loginForm()}
-      {user !== null && blogList()}
+      {user === null ? (
+        loginForm()
+      ) : (
+        <div>
+          <h2>blogs</h2>
+          <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
+          {blogForm()}
+          {blogList()}
+        </div>
+      )}
     </div>
   )
 }
