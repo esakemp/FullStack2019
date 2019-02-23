@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ name, blog, updateBlogs }) => {
   const [visible, setVisibility] = useState(false)
-
+  const [currentBlog, setBlog] = useState(blog)
   const showWhenVisible = { display: visible ? '' : 'none' }
 
   const blogStyle = {
@@ -18,26 +18,41 @@ const Blog = ({ blog }) => {
     event.preventDefault()
     setVisibility(!visible)
   }
-  const handleLike = async event => {
+  const handleLike = event => {
     event.preventDefault()
     blog.likes = blog.likes + 1
 
-    const response = await blogService.update(blog)
-    return console.log(response.data)
-    
+    blogService.update(blog).then(response => console.log(response.data))
+    setBlog(blog)
+  }
+  const handleDelete = event => {
+    event.preventDefault()
+    if (window.confirm(`do you really want to delete ${currentBlog.title}`)) {
+      blogService.remove(blog).then(response => {
+        console.log(response.data)
+        updateBlogs()
+      })
+    }
   }
 
   return (
     <div style={blogStyle}>
       <div onClick={handleClick}>
-        {blog.title} {blog.author}
+        {currentBlog.title} {currentBlog.author}
       </div>
       <div style={showWhenVisible}>
-        <div>{blog.url}</div>
+        <div>{currentBlog.url}</div>
         <div>
-          likes: {blog.likes} <button onClick={handleLike}>like</button>
+          likes: {currentBlog.likes} <button onClick={handleLike}>like</button>
         </div>
-        <div>added by: {blog.user.name}</div>
+        <div>added by: {currentBlog.user.name}</div>
+        <div>
+          {name !== currentBlog.user.name ? (
+            <div />
+          ) : (
+            <button onClick={handleDelete}>delete</button>
+          )}
+        </div>
       </div>
     </div>
   )

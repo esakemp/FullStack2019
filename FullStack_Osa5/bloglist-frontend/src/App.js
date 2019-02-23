@@ -18,7 +18,13 @@ const App = () => {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs))
+    blogService.getAll().then(blogs =>
+      setBlogs(
+        blogs.sort(function(a, b) {
+          return b.likes - a.likes
+        })
+      )
+    )
   }, [])
 
   useEffect(() => {
@@ -29,6 +35,16 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const updateBlogs = () => {
+    blogService.getAll().then(blogs =>
+      setBlogs(
+        blogs.sort(function(a, b) {
+          return b.likes - a.likes
+        })
+      )
+    )
+  }
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -60,14 +76,16 @@ const App = () => {
 
   const handleSubmit = event => {
     event.preventDefault()
-    blogFormRef.current.toggleVisibility()
     const newBlogObject = {
       title: title,
       author: author,
-      url: url
+      url: url,
+      likes: 0,
+      user: user.id
     }
     blogService.create(newBlogObject).then(response => {
-      setBlogs(blogs.concat(response))
+      console.log(response.data)
+      updateBlogs()
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -105,8 +123,6 @@ const App = () => {
     </form>
   )
 
-  const blogFormRef = React.createRef()
-
   const blogForm = () => (
     <div>
       <Togglable buttonLabel="new blog">
@@ -128,7 +144,12 @@ const App = () => {
       <div>
         <h2>list of current blogs</h2>
         {blogs.map(blog => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlogs={updateBlogs}
+            name={user.name}
+          />
         ))}
       </div>
     </div>
