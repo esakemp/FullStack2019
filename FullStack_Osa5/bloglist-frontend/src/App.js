@@ -4,18 +4,20 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
+import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import { useField } from './hooks'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [author, setAuthor] = useState('')
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
+  const username = useField('')
+  const password = useField('')
+  const author = useField('')
+  const title = useField('')
+  const url = useField('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -50,14 +52,14 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username,
-        password
+        username: username.value,
+        password: password.value
       })
       blogService.setToken(user.token)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.onReset()
+      password.onReset()
     } catch (exception) {
       setMessage('wrong username or password')
       setMessageType('error')
@@ -77,18 +79,18 @@ const App = () => {
   const handleSubmit = event => {
     event.preventDefault()
     const newBlogObject = {
-      title: title,
-      author: author,
-      url: url,
+      title: title.value,
+      author: author.value,
+      url: url.value,
       likes: 0,
       user: user.id
     }
     blogService.create(newBlogObject).then(response => {
       console.log(response.data)
       updateBlogs()
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      title.onReset()
+      author.onReset()
+      url.onReset()
       setMessage('Blog was successfully created')
       setMessageType('success')
       setTimeout(() => {
@@ -99,41 +101,26 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <h2>log in to application</h2>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="text"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <div>
+      <LoginForm
+        password={password}
+        username={username}
+        handleLogin={handleLogin}
+      />
+    </div>
   )
 
   const blogForm = () => (
     <div>
       <Togglable buttonLabel="new blog">
         <CreateForm
-          author={author}
-          title={title}
-          url={url}
+          author={author.value}
+          title={title.value}
+          url={url.value}
           handleSubmit={handleSubmit}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
+          handleAuthorChange={author.onChange}
+          handleTitleChange={title.onChange}
+          handleUrlChange={url.onChange}
         />
       </Togglable>
     </div>

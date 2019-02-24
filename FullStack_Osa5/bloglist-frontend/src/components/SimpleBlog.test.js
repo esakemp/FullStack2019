@@ -1,23 +1,21 @@
 import React from 'react'
-import 'jest-dom/extend-expect'
-import { render, cleanup, fireEvent } from 'react-testing-library'
+import { render, fireEvent } from 'react-testing-library'
 import SimpleBlog from './SimpleBlog'
 import Blog from './Blog'
-
-afterEach(cleanup)
 
 test('renders blog', () => {
   const blog = {
     author: 'Author',
     title: 'Title',
-    url: 'testUrl'
+    url: 'testUrl',
+    likes: 5
   }
 
   const mockHandler = jest.fn()
 
   const component = render(<SimpleBlog blog={blog} onClick={mockHandler} />)
   expect(component.container).toHaveTextContent(
-    'Title Authorblog has likes like'
+    'Title Authorblog has 5 likes like'
   )
 })
 
