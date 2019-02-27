@@ -15,25 +15,25 @@ const counterReducer = (state = initialState, action) => {
       }
       return state
     case 'OK':
-    tate = {
-      good: state.good,
-      ok: state.ok + 1,
-      bad: state.bad
-    }
+      state = {
+        good: state.good,
+        ok: state.ok + 1,
+        bad: state.bad
+      }
       return state
     case 'BAD':
-    tate = {
-      good: state.good,
-      ok: state.ok,
-      bad: state.bad + 1
-    }
+      state = {
+        good: state.good,
+        ok: state.ok,
+        bad: state.bad + 1
+      }
       return state
     case 'ZERO':
-    tate = {
-      good: 0,
-      ok: 0,
-      bad: 0
-    }
+      state = {
+        good: 0,
+        ok: 0,
+        bad: 0
+      }
       return state
     default:
       return state
