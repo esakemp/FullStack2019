@@ -1,7 +1,6 @@
 import anecdoteService from '../services/anecdotes'
 
 const anecdoteReducer = (state = [], action) => {
-  console.log('test', action)
   switch (action.type) {
     case 'VOTE':
       const anecdoteIndex = state.findIndex(anec => anec.id === action.data.id)

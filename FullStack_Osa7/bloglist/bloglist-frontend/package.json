@@ -1,0 +1,39 @@
+{
+  "name": "bloglist-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.8.0-alpha.0",
+    "react-dom": "^16.8.0-alpha.0",
+    "react-redux": "^6.0.1",
+    "react-scripts": "^2.1.5",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "watch": "nodemon index.js",
+    "lint": "eslint ."
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "proxy": "http://localhost:3003",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "eslint-plugin-jest": "^22.3.0",
+    "jest-dom": "^3.1.2",
+    "nodemon": "^1.18.10",
+    "react-testing-library": "^5.9.0"
+  }
+}
