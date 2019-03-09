@@ -1,44 +1,50 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { TextField } from '@material-ui/core/'
+import { useField } from '../hooks'
+import { createBlog } from '../reducers/blogReducer'
+import { hide } from '../reducers/visibilityReducer'
 
-const CreateForm = ({
-  handleSubmit,
-  handleAuthorChange,
-  handleTitleChange,
-  handleUrlChange,
-  author,
-  title,
-  url
-}) => {
+const CreateForm = (props) => {
+  const author = useField('')
+  const title = useField('')
+  const url = useField('')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    console.log(event)
+    const newBlogObject = {
+      title: title.value,
+      author: author.value,
+      url: url.value,
+      user: props.user.id
+    }
+    title.onReset()
+    author.onReset()
+    url.onReset()
+    props.hide()
+    props.createBlog(newBlogObject)
+  }
   return (
     <div>
       <h2>create new blog</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={handleTitleChange}
+          <TextField
+            label='title'
+            {...title}
           />
         </div>
         <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={handleAuthorChange}
+          <TextField
+            label='author'
+            {...author}
           />
         </div>
         <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={handleUrlChange}
+          <TextField
+            label='url'
+            {...url}
           />
         </div>
         <button type="submit">create</button>
@@ -47,14 +53,17 @@ const CreateForm = ({
   )
 }
 
-CreateForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  handleAuthorChange: PropTypes.func.isRequired,
-  handleTitleChange: PropTypes.func.isRequired,
-  handleUrlChange: PropTypes.func.isRequired,
-  author: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
 }
 
-export default CreateForm
+const mapDispatchToProps = {
+  createBlog,
+  hide
+}
+
+const ConnectedCreateForm = connect(mapStateToProps, mapDispatchToProps)(CreateForm)
+
+export default ConnectedCreateForm

@@ -2,10 +2,11 @@ const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const mongoose = require('mongoose')
 
 router.get('/', async (request, response) => {
     const blogs = await Blog.find({})
-        .populate('user', { username: 1, name: 1 })
+        .populate('user', { username: 1, name: 1 }).populate('comments')
 
     response.json(blogs.map(b => b.toJSON()))
 })

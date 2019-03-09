@@ -1,61 +1,80 @@
-import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import React from 'react'
+import { connect } from 'react-redux'
+import { deleteBlog, likeBlog, addComment } from '../reducers/blogReducer'
+import { useField } from '../hooks'
 
-const Blog = ({ name, blog, updateBlogs }) => {
-  const [visible, setVisibility] = useState(false)
-  const [currentBlog, setBlog] = useState(blog)
-  const showWhenVisible = { display: visible ? '' : 'none' }
+const Blog = (props) => {
+  const comment = useField('')
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const handleClick = event => {
-    event.preventDefault()
-    setVisibility(!visible)
-  }
   const handleLike = event => {
     event.preventDefault()
-    blog.likes = blog.likes + 1
-
-    blogService.update(blog).then(response => console.log(response.data))
-    setBlog(blog)
+    props.blog.likes = props.blog.likes + 1
+    props.likeBlog(props.blog)
   }
   const handleDelete = event => {
     event.preventDefault()
-    if (window.confirm(`do you really want to delete ${currentBlog.title}`)) {
-      blogService.remove(blog).then(response => {
-        console.log(response.data)
-        updateBlogs()
-      })
+    if (window.confirm(`do you really want to delete ${props.blog.title}`)) {
+      props.deleteBlog(props.blog)
     }
   }
 
+  const handleSubmit = event => {
+    event.preventDefault()
+    const newComment = {
+      comment: comment.value,
+      id: props.blog.id
+    }
+    props.addComment(newComment, props.blog.id)
+    comment.onReset()
+  }
+
+  if (props.blog === undefined) {
+    return null
+  }
+
   return (
-    <div style={blogStyle}>
-      <div onClick={handleClick}>
-        {currentBlog.title} {currentBlog.author}
+    <div>
+      <div>
+        {props.blog.title} {props.blog.author}
       </div>
-      <div style={showWhenVisible} className={'togglableContent'}>
-        <div>{currentBlog.url}</div>
+      <div>
+        <div>{props.blog.url}</div>
         <div>
-          likes: {currentBlog.likes} <button onClick={handleLike}>like</button>
+          likes: {props.blog.likes} <button onClick={handleLike}>like</button>
         </div>
-        <div>added by: {currentBlog.user.name}</div>
+        <div>added by: {props.blog.user.name}</div>
         <div>
-          {name !== currentBlog.user.name ? (
+          {props.name !== props.blog.user.name ? (
             <div />
           ) : (
-            <button onClick={handleDelete}>delete</button>
-          )}
+              <button onClick={handleDelete}>delete</button>
+            )}
+        </div>
+        <div>
+          <h3>comments</h3>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <input type='text' value={comment.value} onChange={comment.onChange} />
+              <button type='submit'>add comment</button>
+            </form>
+          </div>
+          <div>
+            {props.blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)}
+
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default Blog
+
+const mapDispatchToProps = {
+  deleteBlog,
+  likeBlog,
+  addComment
+}
+
+const ConnectedBlogs = connect(null, mapDispatchToProps)(Blog)
+
+export default ConnectedBlogs
