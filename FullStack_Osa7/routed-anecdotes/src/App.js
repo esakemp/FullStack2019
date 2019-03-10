@@ -122,8 +122,7 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote))
     setCreated(true)
     setNotification(`a new anecdote '${anecdote.content}' was created!`)
-    
-    //figure out something better than this
+
     setTimeout(() => {
       setCreated(false)
     }, 1)
