@@ -5,17 +5,16 @@ import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
-import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { userLogin, userLogout, initializeUser } from './reducers/userReducer'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { Table } from 'react-bootstrap'
+import { Button, Paper } from '@material-ui/core'
+
 
 const App = (props) => {
-  const username = useField('')
-  const password = useField('')
 
   const [users, setUsers] = useState([])
   useEffect(() => {
@@ -25,15 +24,11 @@ const App = (props) => {
   useEffect(() => {
     props.initializeBlogs()
   }, [])
+
   useEffect(() => {
     props.initializeUser()
   }, [])
 
-  const handleLogin = async event => {
-    event.preventDefault()
-    props.userLogin(username, password)
-    console.log('logging in with', username, password)
-  }
   const handleLogout = event => {
     event.preventDefault()
     props.userLogout()
@@ -41,11 +36,7 @@ const App = (props) => {
 
   const loginForm = () => (
     <div>
-      <LoginForm
-        password={password}
-        username={username}
-        handleLogin={handleLogin}
-      />
+      <LoginForm />
     </div>
   )
 
@@ -69,8 +60,14 @@ const App = (props) => {
       <div>
         <BlogForm />
         <h2>list of current blogs</h2>
-        {props.blogs.map(blog => <ul style={blogStyle} key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link></ul>
-        )}
+        <Table>
+          <tbody>
+            {props.blogs.map(blog => <tr style={blogStyle} key={blog.id}><td>
+              <Link to={`/blogs/${blog.id}`}>
+                {blog.title} by {blog.author}</Link></td></tr>
+            )}
+          </tbody>
+        </Table>
       </div>
     </div>
   )
@@ -79,8 +76,8 @@ const App = (props) => {
 
     return (
       <div>
+        <h2>list of users</h2>
         <Table>
-          <h2>users</h2>
           <tbody>
             {users.map(user => <tr key={user.id} >
               <td>
@@ -100,11 +97,11 @@ const App = (props) => {
       return null
     }
     return (
-      <div>
+      <Paper>
         <h2>{user.name}</h2>
         <h3>added blogs</h3>
-        {user.blogs.map(blog => <li key={blog.id}>{blog.title}</li>)}
-      </div>
+        {user.blogs.map(blog => <div key={blog.id}>{blog.title}</div>)}
+      </Paper>
     )
   }
 
@@ -117,12 +114,12 @@ const App = (props) => {
       paddingRight: 5
     }
     return (
-      <div>
+      <Paper>
         <Link style={padding} to="/">blogs</Link>
         <Link style={padding} to="/users">users</Link>
         {props.user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
+        <Button onClick={handleLogout}>logout</Button>
+      </Paper>
     )
   }
 
@@ -131,21 +128,19 @@ const App = (props) => {
       <Notification />
       {props.user === null ? (
         loginForm()
-      ) : (
-          <div>
-            <Router>
-              <div>
-                <h4>blog app</h4>
-                <Menu />
-                <Route exact path='/' render={() => <div><BlogList /></div>} />
-                <Route exact path='/users' render={() => <UserList users={users} />} />
-                <Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)} />} />
-                <Route exact path='/blogs/:id' render={({ match }) => <Blog blog={blogById(match.params.id)} name={props.user.name} />} />
-              </div>
-            </Router>
+      ) : (<div>
+        <Router>
+          <Paper>
+            <h4>blog app</h4>
+            <Menu />
+            <Route exact path='/' render={() => <div><BlogList /></div>} />
+            <Route exact path='/users' render={() => <UserList users={users} />} />
+            <Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)} />} />
+            <Route exact path='/blogs/:id' render={({ match }) => <Blog blog={blogById(match.params.id)} name={props.user.name} />} />
+          </Paper>
+        </Router>
 
-          </div>
-        )}
+      </div>)}
     </div>
   )
 }

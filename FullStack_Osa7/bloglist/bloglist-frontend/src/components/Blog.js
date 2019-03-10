@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { deleteBlog, likeBlog, addComment } from '../reducers/blogReducer'
 import { useField } from '../hooks'
+import { Paper, TextField, Button } from '@material-ui/core'
+
 
 const Blog = (props) => {
   const comment = useField('')
@@ -33,38 +35,37 @@ const Blog = (props) => {
   }
 
   return (
-    <div>
+    <Paper>
       <div>
         {props.blog.title} {props.blog.author}
       </div>
       <div>
         <div>{props.blog.url}</div>
         <div>
-          likes: {props.blog.likes} <button onClick={handleLike}>like</button>
+          likes: {props.blog.likes} <Button onClick={handleLike}>like</Button>
         </div>
         <div>added by: {props.blog.user.name}</div>
         <div>
           {props.name !== props.blog.user.name ? (
             <div />
-          ) : (
-              <button onClick={handleDelete}>delete</button>
-            )}
+          ) : (<Button onClick={handleDelete}>delete</Button>)}
         </div>
         <div>
           <h3>comments</h3>
           <div>
             <form onSubmit={handleSubmit}>
-              <input type='text' value={comment.value} onChange={comment.onChange} />
-              <button type='submit'>add comment</button>
+              <TextField id='comment' {...comment} label='comment' />
+              <Button color='primary' type='submit'>add comment</Button>
             </form>
           </div>
           <div>
-            {props.blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)}
-
+            <ul>
+              {props.blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)}
+            </ul>
           </div>
         </div>
       </div>
-    </div>
+    </Paper>
   )
 }
 

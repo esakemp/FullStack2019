@@ -1,31 +1,49 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { userLogin } from '../reducers/userReducer'
+import { useField } from '../hooks'
+import { TextField, Button } from '@material-ui/core'
 
-const LoginForm = ({username, password, handleLogin}) => {
+const LoginForm = (props) => {
+  const username = useField('')
+  const password = useField('')
+
+  const handleLogin = async event => {
+    event.preventDefault()
+    props.userLogin(username, password)
+    console.log('logging in with', username, password)
+
+  }
   return (
     <form onSubmit={handleLogin}>
       <h2>log in to application</h2>
       <div>
-        username
-        <input
+        <TextField
+          id='username'
+          label='username'
           {...username}
         />
       </div>
       <div>
-        password
-        <input
-          {...password}
+        <TextField
+          id='password'
+          label='password'
+          type='password'
+          value={password.value}
+          onChange={password.onChange}
         />
       </div>
-      <button type="submit">login</button>
+      <Button variant="contained" type='submit'>
+        login
+      </Button>
     </form>
   )
 }
 
-LoginForm.propTypes = {
-    username: PropTypes.object.isRequired,
-    password: PropTypes.object.isRequired,
-    handleLogin: PropTypes.func.isRequired
+const mapDispatchToProps = {
+  userLogin
 }
 
-export default LoginForm
+const ConnectedLoginForm = connect(null, mapDispatchToProps)(LoginForm)
+
+export default ConnectedLoginForm

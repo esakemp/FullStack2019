@@ -21,7 +21,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "watch": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,7 +36,12 @@
   ],
   "devDependencies": {
     "axios": "^0.18.0",
+    "cypress": "^3.1.5",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jest": "^22.3.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
     "jest-dom": "^3.1.2",
     "nodemon": "^1.18.10",
     "react-testing-library": "^5.9.0"

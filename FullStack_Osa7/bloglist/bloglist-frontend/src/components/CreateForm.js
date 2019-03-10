@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { TextField } from '@material-ui/core/'
+import { TextField, Button } from '@material-ui/core/'
 import { useField } from '../hooks'
 import { createBlog } from '../reducers/blogReducer'
 import { hide } from '../reducers/visibilityReducer'
@@ -27,27 +27,30 @@ const CreateForm = (props) => {
   }
   return (
     <div>
-      <h2>create new blog</h2>
+      <h2>add new blog</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <TextField
+            id='title'
             label='title'
             {...title}
           />
         </div>
         <div>
           <TextField
+            id='author'
             label='author'
             {...author}
           />
         </div>
         <div>
           <TextField
+            id='url'
             label='url'
             {...url}
           />
         </div>
-        <button type="submit">create</button>
+        <Button type="submit">create</Button>
       </form>
     </div>
   )

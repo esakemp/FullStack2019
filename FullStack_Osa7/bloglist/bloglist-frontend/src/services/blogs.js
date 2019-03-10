@@ -30,7 +30,7 @@ const update = async updatedObject => {
   return response
 }
 
-const comment = async object => {  
+const comment = async object => {
   const response = await axios.post(`${baseUrl}/${object.id}/comments`, object)
 
   return response.data
